@@ -1,10 +1,12 @@
 "use client";
-import React from "react";
-import { Button } from "../ui/button";
 import Image from "next/image";
-import { toast } from "@/hooks/use-toast";
 import { signIn } from "next-auth/react";
+import React from "react";
+
 import ROUTES from "@/constants/routes";
+import { toast } from "@/hooks/use-toast";
+
+import { Button } from "../ui/button";
 
 const SocialForm = () => {
   const buttonClassName =
@@ -27,7 +29,7 @@ const SocialForm = () => {
     }
   };
   return (
-    <div className="mt-10 flex flex-wrap  gap-2.5 ">
+    <div className="mt-10 flex flex-wrap  gap-2.5">
       <Button
         onClick={() => handleSignIn("github")}
         className={buttonClassName}
