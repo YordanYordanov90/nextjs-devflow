@@ -1,11 +1,10 @@
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { SessionProvider } from "next-auth/react";
+import "./globals.css";
 import React from "react";
 
-import "./globals.css";
-
-import { auth } from "@/auth";
 import { Toaster } from "@/components/ui/toaster";
 import ThemeProvider from "@/context/Theme";
 
@@ -34,17 +33,21 @@ const RootLayout = async ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const session = await auth();
   return (
-    <html suppressHydrationWarning lang="en">
-      <head>
-        <link
-          rel="stylesheet"
-          type="text/css"
-          href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
-        />
-      </head>
-      <SessionProvider session={session}>
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+      }}
+    >
+      <html suppressHydrationWarning lang="en">
+        <head>
+          <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+          />
+        </head>
+
         <body
           className={`${inter.className} ${spaceGrotesk.variable} antialiased`}
         >
@@ -58,8 +61,8 @@ const RootLayout = async ({
           </ThemeProvider>
           <Toaster />
         </body>
-      </SessionProvider>
-    </html>
+      </html>
+    </ClerkProvider>
   );
 };
 

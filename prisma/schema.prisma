@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId       Int           @id @default(autoincrement())
+  clerkId      String        @unique
+  name         String
+  username     String
+  email        String        @unique
+  bio          String?
+  image        String
+  location     String?
+  portfolioUrl String?
+  reputation   Int           @default(0)
+  questions    Question[]    @relation("UserQuestions")
+  answers      Answer[]      @relation("UserAnswers")
+  votes        Vote[]        @relation("UserVotes")
+  interactions Interaction[] @relation("UserInteractions")
+  collections  Collection[]  @relation("UserCollections")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Question {
+  id        Int           @id @default(autoincrement())
+  title     String        @db.VarChar(255)
+  content   String
+  views     Int           @default(0)
+  upvotes   Int           @default(0)
+  downvotes Int           @default(0)
+  answers   Answer[]
+  tags      TagQuestion[]
+  votes     Vote[]        @relation("QuestionVotes")
+  collections Collection[]
+  authorId  Int
+  author    User          @relation("UserQuestions", fields: [authorId], references: [userId], onDelete: Cascade)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model Answer {
+  id         Int           @id @default(autoincrement())
+  content    String
+  upvotes    Int           @default(0)
+  downvotes  Int           @default(0)
+  questionId Int
+  question   Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  authorId   Int
+  author     User          @relation("UserAnswers", fields: [authorId], references: [userId], onDelete: Cascade)
+  votes      Vote[]        @relation("AnswerVotes")
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Tag {
+  id        Int            @id @default(autoincrement())
+  name      String         @unique
+  questions TagQuestion[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model TagQuestion {
+  id         Int       @id @default(autoincrement())
+  tagId      Int
+  tag        Tag       @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  questionId Int
+  question   Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Collection {
+  id         Int       @id @default(autoincrement())
+  authorId   Int
+  author     User      @relation("UserCollections", fields: [authorId], references: [userId], onDelete: Cascade)
+  questionId Int
+  question   Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Interaction {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  user       User      @relation("UserInteractions", fields: [userId], references: [userId], onDelete: Cascade)
+  action     String
+  actionId   Int
+  actionType String     @default("question") // Could be "question" or "answer"
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Vote {
+  id         Int       @id @default(autoincrement())
+  voteType   String    @default("upvote") // Could be "upvote" or "downvote"
+  authorId   Int
+  author     User      @relation("UserVotes", fields: [authorId], references: [userId], onDelete: Cascade)
+  questionId Int?      // Optional for when voting is on a question
+  question   Question? @relation("QuestionVotes", fields: [questionId], references: [id], onDelete: Cascade)
+  answerId   Int?      // Optional for when voting is on an answer
+  answer     Answer?   @relation("AnswerVotes", fields: [answerId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+

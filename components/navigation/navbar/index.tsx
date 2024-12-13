@@ -1,3 +1,4 @@
+import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -17,11 +18,17 @@ const Navbar = () => {
       </Link>
       <p>Global Search</p>
       <div className="flex items-center justify-between gap-5">
+        <div className="">
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </div>
         <Theme />
-        <div className='hidden max-md:block'>
-
-
-        <MobileNavigation />
+        <div className="hidden max-md:block">
+          <MobileNavigation />
         </div>
       </div>
     </nav>

@@ -1,10 +1,6 @@
-import Link from "next/link";
-
 import QuestinCard from "@/components/cards/QuestinCard";
 import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
-import { Button } from "@/components/ui/button";
-import ROUTES from "@/constants/routes";
 
 const questions = [
   {
@@ -21,7 +17,7 @@ const questions = [
       image:
         "https://static.vecteezy.com/system/resources/previews/002/002/403/non_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg",
     },
-    upvotes:  24,
+    upvotes: 24,
     answers: 16,
     views: 150,
     createdAt: new Date("2023-09-01"),
@@ -67,12 +63,6 @@ export default async function Home({ searchParams }: SearchParams) {
     <>
       <section className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
         <h1 className="h1-bold text-dark100_light900">All Question</h1>
-        <Button
-          asChild
-          className="primary-gradient min-h-[46px] px-4 py-3 !text-light-900"
-        >
-          <Link href={ROUTES.ASK_QUESTION}>Ask a Question</Link>
-        </Button>
       </section>
       <section className="mt-11">
         <LocalSearch
